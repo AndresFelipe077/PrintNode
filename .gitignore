@@ -1,0 +1,12 @@
+# Local configuration
+config_impresora.json
+
+# Logs
+server.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
