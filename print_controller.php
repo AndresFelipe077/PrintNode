@@ -19,25 +19,28 @@ if (!$data || !isset($data['order'])) {
 $order = $data['order'];
 $url = 'http://127.0.0.1:5000/print';
 
-$options = [
-    'http' => [
-        'method'  => 'POST',
-        'header'  => 'Content-Type: application/json',
-        'content' => json_encode(['order' => $order]),
-        'timeout' => 5 // 5 second timeout
-    ]
-];
+$ch = curl_init($url);
+$payload = json_encode(['order' => $order]);
 
-$context = stream_context_create($options);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 10 second timeout
 
-// Suppress errors to handle them manually
-$response = @file_get_contents($url, false, $context);
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$error = curl_error($ch);
+curl_close($ch);
 
-if ($response === FALSE) {
+if ($response === FALSE || $httpCode !== 200) {
+    error_log("Print Error: Code $httpCode, Detail: $error");
     http_response_code(503);
     echo json_encode([
         "status" => "error", 
-        "message" => "The Python print server is not responding. Make sure printer_server.py is running."
+        "message" => "The Python print server is not responding correctly.",
+        "details" => $error,
+        "http_code" => $httpCode
     ]);
 } else {
     echo json_encode(["status" => "success", "message" => "Order processed successfully"]);
