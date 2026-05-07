@@ -202,9 +202,9 @@
         </button>
     </form>
 
-    <div class="status-badge">
-        <div class="status-dot"></div>
-        Server Connected
+    <div class="status-badge" :style="{ color: printerStatus === 'online' ? '#4ade80' : '#f87171', background: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }">
+        <div class="status-dot" :style="{ background: printerStatus === 'online' ? '#4ade80' : '#f87171', boxShadow: printerStatus === 'online' ? '0 0 8px #4ade80' : '0 0 8px #f87171' }"></div>
+        Printer: {{ printerStatus === 'online' ? 'Online' : 'Offline / Local Server Not Found' }}
     </div>
 </div>
 
@@ -213,13 +213,75 @@
         el: "#app",
         data: {
             order: '',
-            loading: false
+            loading: false,
+            printerStatus: 'checking',
+            localServerUrl: 'http://127.0.0.1:5000',
+            pollingInterval: null
+        },
+        mounted() {
+            this.checkPrinterStatus();
+            // Start polling for new orders every 5 seconds
+            this.pollingInterval = setInterval(this.pollOrders, 5000);
+        },
+        beforeDestroy() {
+            if (this.pollingInterval) clearInterval(this.pollingInterval);
         },
         methods: {
+            async checkPrinterStatus() {
+                try {
+                    const response = await fetch(`${this.localServerUrl}/status`);
+                    if (response.ok) {
+                        this.printerStatus = 'online';
+                    } else {
+                        this.printerStatus = 'offline';
+                    }
+                } catch (error) {
+                    this.printerStatus = 'offline';
+                }
+            },
+            async pollOrders() {
+                // Only poll if the printer is online to avoid unnecessary errors
+                if (this.printerStatus !== 'online') {
+                    await this.checkPrinterStatus();
+                    return;
+                }
+
+                try {
+                    const response = await fetch('api.php');
+                    const data = await response.json();
+
+                    if (data.status === 'success' && data.orders.length > 0) {
+                        for (const order of data.orders) {
+                            await this.printLocally(order);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Polling error:", error);
+                }
+            },
+            async printLocally(orderData) {
+                try {
+                    const response = await fetch(`${this.localServerUrl}/print`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ order: orderData.content })
+                    });
+                    
+                    if (response.ok) {
+                        console.log(`Order ${orderData.id} printed successfully`);
+                    } else {
+                        console.error(`Failed to print order ${orderData.id}`);
+                    }
+                } catch (error) {
+                    console.error("Local print error:", error);
+                }
+            },
             async sendOrder() {
+                if (!this.order.trim()) return;
+                
                 this.loading = true;
                 try {
-                    const response = await fetch('print_controller.php', {
+                    const response = await fetch('api.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -231,7 +293,9 @@
 
                     if (data.status === 'success') {
                         this.order = '';
-                        alert("✅ Order sent to printer!");
+                        // If we are on the printer machine, we might want to trigger poll immediately
+                        this.pollOrders();
+                        alert("✅ Order queued for printing!");
                     } else {
                         alert("❌ Error: " + data.message);
                     }
