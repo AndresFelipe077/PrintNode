@@ -23,6 +23,13 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)  # Enable CORS to avoid network issues
 
+@app.after_request
+def add_cors_headers(response):
+    # This header is required for Private Network Access (PNA)
+    # when a public site tries to talk to a local/loopback address
+    response.headers['Access-Control-Allow-Private-Network'] = 'true'
+    return response
+
 CONFIG_FILE = "config_impresora.json"
 
 class PrinterService:
