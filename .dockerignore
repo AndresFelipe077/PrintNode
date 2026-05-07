@@ -1,0 +1,15 @@
+# Local Python server and dependencies
+printer_server.py
+config_impresora.json
+venv/
+__pycache__/
+*.log
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore

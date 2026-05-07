@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  printnode-web:
+    build: .
+    container_name: alexander-printnode
+    ports:
+      - "8080:80"
+    volumes:
+      - ./orders_queue.json:/var/www/html/orders_queue.json
+    restart: always
