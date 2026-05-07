@@ -1,91 +1,86 @@
-# Alexander Print System - Sistema de Impresión Remota Local
+# 🖨️ Alexander PrintNode - Guía de Configuración A a Z
 
-Una solución profesional y eficiente para enviar órdenes desde dispositivos móviles (celulares/tablets) directamente a una impresora térmica local en Windows, utilizando una arquitectura híbrida de PHP y Python.
-
----
-
-## 🏗️ ¿Cómo funciona? (Arquitectura)
-
-Este sistema elimina la necesidad de servicios costosos en la nube o túneles lentos como ngrok. Funciona 100% en tu red local (Intranet):
-
-1.  **Interfaz Web (PHP/Vue.js)**: Los meseros o clientes acceden a una página web moderna desde su celular.
-2.  **Controlador Puente (PHP)**: Recibe la orden y la reenvía internamente al servidor de impresión.
-3.  **Servidor de Impresión (Python)**: Se comunica directamente con el sistema de impresión de Windows para sacar el ticket físico.
+Este sistema permite enviar órdenes desde cualquier parte del mundo (vía internet) e imprimirlas automáticamente en una impresora térmica local conectada a una PC con Windows.
 
 ---
 
-## 📋 Requisitos del Sistema
+## 🏗️ 1. Arquitectura del Sistema (¿Cómo funciona?)
 
-### Hardware
-*   **PC con Windows**: Donde estará conectada la impresora.
-*   **Impresora Térmica/POS**: Instalada y configurada correctamente en Windows.
-*   **Red Wi-Fi**: Todos los dispositivos deben estar conectados a la misma red.
+Para que el sistema funcione en un **Hosting Compartido** sin necesidad de túneles complejos (como Ngrok), utilizamos una arquitectura de **Puente por Navegador**:
 
-### Software
-*   **XAMPP**: (Específicamente el módulo Apache).
-*   **Python 3.10 o superior**: Instalado en Windows (asegúrate de marcar la opción "Add Python to PATH" durante la instalación).
+1.  **Hosting (Nube):** Aloja la web y la cola de pedidos (`api.php`). Recibe órdenes de clientes/celulares.
+2.  **Navegador (Local):** Una pestaña abierta en la PC de la impresora actúa como "puente". Escucha pedidos nuevos en la nube y los manda a la impresora.
+3.  **Servidor Python (Local):** Recibe las órdenes del navegador y habla con el driver de Windows para imprimir.
 
 ---
 
-## 🚀 Guía de Instalación Paso a Paso
+## 🌐 2. Configuración en el Hosting (Producción)
 
-### 1. Preparar el Servidor Web (XAMPP)
-*   Copia la carpeta completa `Alexander` dentro del directorio de XAMPP: `C:\xampp\htdocs\`.
-*   Abre el **XAMPP Control Panel** e inicia el módulo **Apache**.
+### A. Subida de Archivos
+Sube los siguientes archivos a tu hosting vía FTP o Administrador de Archivos:
+- `index.php` (Interfaz principal)
+- `api.php` (Gestor de la cola de pedidos)
+- `orders_queue.json` (Archivo donde se guardan los pedidos temporalmente)
 
-### 2. Configurar el Entorno Python
-Abre una terminal (PowerShell o CMD) dentro de la carpeta del proyecto y ejecuta el siguiente comando para instalar las librerías necesarias:
-```powershell
-pip install flask flask-cors pywin32
-```
+### B. Permisos de Escritura (IMPORTANTE)
+Asegúrate de que el archivo `orders_queue.json` tenga **permisos de escritura (775 o 777)**. El sistema lo creará automáticamente, pero el servidor debe tener permiso para escribir en la carpeta.
 
-### 3. Configurar el Firewall de Windows (Muy importante)
-Para que los celulares puedan "ver" a tu PC, debes abrir el puerto de Apache:
-1.  Busca en Windows: **Firewall de Windows Defender con seguridad avanzada**.
-2.  Ve a **Reglas de entrada** -> **Nueva regla**.
-3.  Selecciona **Puerto** -> **TCP** -> **Puertos locales específicos: 80**.
-4.  Selecciona **Permitir la conexión**.
-5.  Dale un nombre como "Acceso Web Alexander" y finaliza.
+### C. URL del Sistema
+Tu URL será algo como: `https://tu-dominio.com/Alexander/`
 
 ---
 
-## 🏃 Cómo ponerlo en marcha
+## 💻 3. Configuración en la PC Local (Donde está la impresora)
 
-### Paso 1: Iniciar el Servidor de Impresión
-En la terminal del proyecto, ejecuta:
-```powershell
-python printer_server.py
-```
-*   **Nota**: Si es la primera vez, el sistema te mostrará una lista de impresoras. Escribe el número correspondiente a tu impresora térmica y presiona **Enter**. Esto creará un archivo `config_impresora.json`.
+### A. Requisitos
+1.  **Python 3.10+**: Descárgalo de [python.org](https://www.python.org/). Al instalar, marca la casilla **"Add Python to PATH"**.
+2.  **Librerías**: Abre una terminal (CMD o PowerShell) y ejecuta:
+    ```bash
+    pip install flask flask-cors pywin32
+    ```
 
-### Paso 2: Conectar desde el Celular
-1.  Averigua la IP local de tu PC (abre CMD y escribe `ipconfig`. Busca "Dirección IPv4", suele ser algo como `192.168.x.x`).
-2.  En el navegador del celular, ingresa la URL:
-    `http://TU_IP_LOCAL/Alexander/`
-    *(Ejemplo: http://192.168.10.244/Alexander/)*
-
----
-
-## ⚙️ Configuración Avanzada
-
-Puedes editar el archivo `config_impresora.json` para ajustar detalles sin reiniciar todo:
-*   `"printer"`: Nombre exacto de la impresora en Windows.
-*   `"font_size"`: Tamaño de la letra en el ticket (ej: `34` para estándar, `40` para más grande).
+### B. Iniciar el Servidor de Impresión
+1.  Abre una terminal en la carpeta del proyecto.
+2.  Ejecuta: `python printer_server.py`
+3.  Si es la primera vez, selecciona tu impresora de la lista numerada.
+4.  **Mantén esta ventana abierta.**
 
 ---
 
-## 🔍 Solución de Problemas
+## 🔌 4. El "Puente" de Impresión (Paso Crítico)
 
-*   **El servidor Python da error de "Puerto ocupado"**: Asegúrate de que no tengas otra instancia de `printer_server.py` abierta. Cierra la ventana y vuelve a intentar.
-*   **El celular no carga la página**:
-    *   Verifica que el celular esté en el mismo Wi-Fi.
-    *   Asegúrate de que Apache en XAMPP esté en color VERDE.
-    *   Revisa el Paso 3 del Firewall.
-*   **Imprime caracteres extraños o no imprime**:
-    *   Verifica que la impresora esté encendida y tenga papel.
-    *   Asegúrate de haber seleccionado la impresora correcta en la configuración inicial.
-*   **La IP cambió**: Si reinicias el router, la IP de tu PC podría cambiar. Deberás usar la nueva IP en los celulares. (Se recomienda configurar una "IP Estática" en Windows para evitar esto).
+Para que las órdenes se impriman solas, **debes tener siempre abierta una pestaña del navegador** con la URL de tu sistema en la PC donde está conectada la impresora.
+
+1.  Abre Chrome o Edge en la PC local.
+2.  Ingresa a la URL de tu hosting (ej: `https://tu-dominio.com/Alexander/`).
+3.  Verifica que el estado diga **"Printer: Online"** (en color verde).
+4.  **No cierres esta pestaña.** El sistema revisará automáticamente cada 5 segundos si hay pedidos nuevos para imprimir.
 
 ---
 
-© 2026 Alexander System - Desarrollo Profesional Local
+## 🔒 5. Solución al Bloqueo de HTTPS (Mixed Content)
+
+Si tu hosting usa **HTTPS** (candado verde), el navegador bloqueará la comunicación con la impresora local (`http://127.0.0.1`) por seguridad. Para permitirlo **sin túneles**:
+
+### En Google Chrome / Microsoft Edge:
+1.  En la barra de direcciones de la PC local, escribe: `chrome://flags/#allow-insecure-localhost` (o `edge://flags/...`)
+2.  Cambia la opción a **Enabled**.
+3.  Reinicia el navegador.
+
+*Alternativa:* Si no quieres tocar los flags, accede a tu sitio vía **HTTP** (sin la S) si tu hosting lo permite.
+
+---
+
+## 🛠️ 6. Solución de Problemas
+
+- **Estatus "Offline":** 
+    - Verifica que `printer_server.py` esté corriendo.
+    - Asegúrate de que el antivirus/firewall no esté bloqueando el puerto 5000.
+- **No se guardan los pedidos:**
+    - Revisa los permisos de `orders_queue.json` en el hosting.
+- **Impresión lenta:**
+    - Puedes ajustar el tiempo de revisión en `index.php` cambiando `setInterval(this.pollOrders, 5000)` (5000ms = 5 seg).
+
+---
+
+© 2026 Alexander System - Documentación de Producción
