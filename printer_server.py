@@ -127,10 +127,18 @@ class PrinterService:
 
     def load_config(self):
         if os.path.exists(self.config_path):
-            with open(self.config_path, "r") as f:
-                config = json.load(f)
-            logger.info(f"Configuration loaded: {config['printer']}")
-            return config
+            try:
+                with open(self.config_path, "r") as f:
+                    content = f.read().strip()
+                    if not content:
+                        logger.warning(f"Config file {self.config_path} is empty. Using setup.")
+                        return self.setup_printer()
+                    config = json.loads(content)
+                logger.info(f"Configuration loaded: {config['printer']}")
+                return config
+            except Exception as e:
+                logger.error(f"Error loading config: {e}. Re-setting up.")
+                return self.setup_printer()
         
         return self.setup_printer()
 
@@ -263,8 +271,8 @@ def background_polling(printer_service):
                 except Exception as e:
                     logger.error(f"Fallo de conexión remota: {e}")
             
-            # 2. Si no hay URL o falló, intentar con archivo local (fallback)
-            elif os.path.exists(TEST_JSON_PATH):
+            # 2. Si no hay datos (porque no hay URL o falló), intentar con archivo local (fallback)
+            if not data and os.path.exists(TEST_JSON_PATH):
                 try:
                     with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
                         data = json.load(f)
