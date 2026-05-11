@@ -245,7 +245,7 @@
             loading: false,
             printerStatus: 'checking',
             printerName: '',
-            localServerUrl: 'proxy.php',
+            localServerUrl: 'http://127.0.0.1:5000',
             pollingInterval: null
         },
         mounted() {
@@ -259,7 +259,7 @@
         methods: {
             async checkPrinterStatus() {
                 try {
-                    const response = await fetch(`${this.localServerUrl}?path=status`);
+                    const response = await fetch(`${this.localServerUrl}/status`);
                     if (response.ok) {
                         const data = await response.json();
                         this.printerStatus = 'online';
@@ -292,7 +292,7 @@
             },
             async printLocally(orderData) {
                 try {
-                    const response = await fetch(`${this.localServerUrl}?path=print`, {
+                    const response = await fetch(`${this.localServerUrl}/print`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ order: orderData.content })
@@ -310,15 +310,30 @@
             async testJson() {
                 this.loading = true;
                 try {
-                    const response = await fetch(`${this.localServerUrl}?path=test-json`);
-                    const data = await response.json();
-                    if (data.status === 'ok') {
-                        alert("✅ " + data.message);
+                    // Si estamos en localhost, tratamos de imprimir directo.
+                    // Si estamos en remoto (móvil), llamamos a api.php para forzar la impresión remota.
+                    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    
+                    if (isLocal) {
+                        const response = await fetch(`${this.localServerUrl}/test-json`);
+                        const data = await response.json();
+                        if (data.status === 'ok') {
+                            alert("✅ " + data.message);
+                        } else {
+                            alert("❌ " + data.message);
+                        }
                     } else {
-                        alert("❌ " + data.message);
+                        // Forzar prueba modificando el JSON remoto para que el script de Python lo detecte en el polling
+                        const response = await fetch('api.php?action=trigger_test');
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            alert("✅ ¡Prueba remota encolada! La impresora local lo detectará en breve.");
+                        } else {
+                            alert("❌ Error: " + data.message);
+                        }
                     }
                 } catch (error) {
-                    alert("❌ No se pudo conectar con el servidor de impresión. Asegúrate de que printer_server.py esté ejecutándose.");
+                    alert("❌ No se pudo conectar con el servidor. Asegúrate de que todo esté en orden.");
                 } finally {
                     this.loading = false;
                 }

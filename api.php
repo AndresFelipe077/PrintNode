@@ -38,6 +38,24 @@ if ($method === 'POST') {
     }
 } elseif ($method === 'GET') {
     // GET PENDING ORDERS
+    if (isset($_GET['action']) && $_GET['action'] === 'trigger_test') {
+        $file = 'integracion/server_comandas.json';
+        if (file_exists($file)) {
+            $data = json_decode(file_get_contents($file), true);
+            $new_id = (string)time();
+            foreach ($data as &$item) {
+                $item['id_pedido'] = $new_id;
+                $item['id'] = uniqid();
+                $item['id_unico'] = $item['id'];
+            }
+            file_put_contents($file, json_encode($data));
+            echo json_encode(['status' => 'success', 'message' => 'Test triggered']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Archivo JSON no encontrado']);
+        }
+        exit;
+    }
+
     $queue = json_decode(file_get_contents($queueFile), true);
     $pending = array_filter($queue, function($o) {
         return $o['status'] === 'pending';
