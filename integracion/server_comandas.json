@@ -1,0 +1,1071 @@
+[
+    {
+        "id": "e88259c35cb5061daac1713f9ad042be",
+        "id_pedido": 1,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "83",
+                "numero_mesa": "1",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 4,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 10:33:07"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 2,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 10:33:07"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 10:33:07",
+        "fecha_creacion_documento": "2026-05-10 10:33:07"
+    },
+    {
+        "id": "10ad3b7343a88144e3421cae4084b3f6",
+        "id_pedido": 2,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "1",
+                "numero_mesa": "2",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 4,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "uno sin azucar",
+                "fecha_hora_agregado": "2026-05-10 14:59:07"
+            }
+        ],
+        "telefono": "3125008001",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 14:59:07",
+        "fecha_creacion_documento": "2026-05-10 14:59:07",
+        "nombre_cliente": "pedro mejia"
+    },
+    {
+        "id": "db576b2bb858569f2678eace94a46937",
+        "id_pedido": 3,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "62",
+                "numero_mesa": "1",
+                "zona": "domicilio"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 3,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 15:34:23"
+            }
+        ],
+        "telefono": "3156520015",
+        "direccion": "av novena calle 89",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 15:34:23",
+        "fecha_creacion_documento": "2026-05-10 15:34:23",
+        "nombre_cliente": "alexander"
+    },
+    {
+        "id": "387fc28daf6c5dce339586d2dad09920",
+        "id_pedido": 5,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "95",
+                "numero_mesa": "4",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 3,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 20:43:23"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 20:43:23",
+        "fecha_creacion_documento": "2026-05-10 20:43:23"
+    },
+    {
+        "id": "27e6016c280edf97686377d2a57ddb66",
+        "id_pedido": 6,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "38",
+                "numero_mesa": "5",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "9",
+                "nombre_producto": "piña 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-27 06:54:30",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "",
+                "hash_id": null,
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 20:44:04"
+            },
+            {
+                "id_producto": "8",
+                "nombre_producto": "pepsi 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-24 04:42:40",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "3",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": "2629d69c1feaa13b19d954ad85b",
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 20:44:04"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 20:44:04",
+        "fecha_creacion_documento": "2026-05-10 20:44:04"
+    },
+    {
+        "id": "7c4309bf381b3ba0bc1bbd6a4c7931da",
+        "id_pedido": 7,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "39",
+                "numero_mesa": "6",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "13",
+                "nombre_producto": "Cono de 2 bolas",
+                "precio_uno": 8000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "helados",
+                "descripcion": "",
+                "fecha_creacion": "2026-03-22 20:16:05",
+                "composicion": {
+                    "Sabores": [
+                        {
+                            "nombre_variante": "Chocolate",
+                            "precio_variable": 0
+                        },
+                        {
+                            "nombre_variante": "Mandarina",
+                            "precio_variable": 0
+                        }
+                    ]
+                },
+                "preparacion": "[{\"enunciado\":\"Sabores\",\"cantidad_seleccionable\":2,\"estatus\":\"obligatorio\",\"variantes\":[{\"nombre_variante\":\"Fresa \",\"precio_variable\":0},{\"nombre_variante\":\"Chocolate\",\"precio_variable\":0},{\"nombre_variante\":\"Vainilla\",\"precio_variable\":0},{\"nombre_variante\":\"Ron con pasas\",\"precio_variable\":0},{\"nombre_variante\":\"Mandarina\",\"precio_variable\":0}]}]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"\",\"costo_total\":1083.3333,\"costo_unitario\":1083.3333}",
+                "hash_id": null,
+                "precio_raw": 8000,
+                "observacion": "Sabores: Chocolate, Mandarina",
+                "fecha_hora_agregado": "2026-05-10 20:45:29"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 20:45:29",
+        "fecha_creacion_documento": "2026-05-10 20:45:29"
+    },
+    {
+        "id": "86567bb3545cdbd8f38f6e4d675cd059",
+        "id_pedido": 8,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "50",
+                "numero_mesa": "7",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "8",
+                "nombre_producto": "pepsi 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-24 04:42:40",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 2,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "3",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": "2629d69c1feaa13b19d954ad85b",
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:05:53"
+            },
+            {
+                "id_producto": "9",
+                "nombre_producto": "piña 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-27 06:54:30",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "",
+                "hash_id": null,
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:05:53"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:05:53",
+        "fecha_creacion_documento": "2026-05-10 21:05:53"
+    },
+    {
+        "id": "41caedfd44e9ce78bcc35d20951902f6",
+        "id_pedido": 9,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "43",
+                "numero_mesa": "8",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:08:30"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:08:30"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:08:30",
+        "fecha_creacion_documento": "2026-05-10 21:08:30"
+    },
+    {
+        "id": "844a9bff0802c662d8338dfa1824ecad",
+        "id_pedido": 10,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "108",
+                "numero_mesa": "9",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 4,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:30:20"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:30:20",
+        "fecha_creacion_documento": "2026-05-10 21:30:20"
+    },
+    {
+        "id": "7fa818f9cf0f9122f1cf62b01f77fca0",
+        "id_pedido": 11,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "109",
+                "numero_mesa": "10",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "8",
+                "nombre_producto": "pepsi 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-24 04:42:40",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "3",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": "2629d69c1feaa13b19d954ad85b",
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:33:22"
+            },
+            {
+                "id_producto": "9",
+                "nombre_producto": "piña 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-27 06:54:30",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "",
+                "hash_id": null,
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:33:22"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:33:22",
+        "fecha_creacion_documento": "2026-05-10 21:33:22"
+    },
+    {
+        "id": "d4300360416b5e15add89e2b28f4e027",
+        "id_pedido": 12,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "110",
+                "numero_mesa": "11",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:35:30"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:35:30"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:35:30",
+        "fecha_creacion_documento": "2026-05-10 21:35:30"
+    },
+    {
+        "id": "b86cc21c995759c11ca05ba8cbd1ef67",
+        "id_pedido": 13,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "111",
+                "numero_mesa": "12",
+                "zona": "mesa"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 3,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:36:16"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:36:16",
+        "fecha_creacion_documento": "2026-05-10 21:36:16"
+    },
+    {
+        "id": "3f80bbc6809ac18a982afb1269a96ab2",
+        "id_pedido": 14,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "85",
+                "numero_mesa": "1",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "8",
+                "nombre_producto": "pepsi 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-24 04:42:40",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "3",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": "2629d69c1feaa13b19d954ad85b",
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:38:53"
+            },
+            {
+                "id_producto": "9",
+                "nombre_producto": "piña 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-27 06:54:30",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 3,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "",
+                "hash_id": null,
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 21:38:53"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 21:38:53",
+        "fecha_creacion_documento": "2026-05-10 21:38:53"
+    },
+    {
+        "id": "37e7b25038518ac0fd5e8b6a67fe06c6",
+        "id_pedido": 15,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "69",
+                "numero_mesa": "2",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "8",
+                "nombre_producto": "pepsi 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-24 04:42:40",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 2,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "3",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": "2629d69c1feaa13b19d954ad85b",
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:00:34"
+            },
+            {
+                "id_producto": "9",
+                "nombre_producto": "piña 350ml",
+                "precio_uno": 4000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-02-27 06:54:30",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "no",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "",
+                "hash_id": null,
+                "precio_raw": 4000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:00:34"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 22:00:34",
+        "fecha_creacion_documento": "2026-05-10 22:00:34"
+    },
+    {
+        "id": "8afe7fd79c632762078c4e7fe886e96e",
+        "id_pedido": 16,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "59",
+                "numero_mesa": "3",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 3,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:02:07"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 22:02:07",
+        "fecha_creacion_documento": "2026-05-10 22:02:07"
+    },
+    {
+        "id": "26d31e6e6186598263109401d9b68f98",
+        "id_pedido": 17,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "61",
+                "numero_mesa": "4",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:05:14"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:05:14"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 22:05:14",
+        "fecha_creacion_documento": "2026-05-10 22:05:14"
+    },
+    {
+        "id": "992a9931a931ab0012a1e3dfc2fa19a4",
+        "id_pedido": 18,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "65",
+                "numero_mesa": "5",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:05:53"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 1,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-10 22:05:53"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-10 22:05:53",
+        "fecha_creacion_documento": "2026-05-10 22:05:53"
+    },
+    {
+        "id": "2a62a8f0ac26ea1c58bd2246e070fda7",
+        "id_pedido": 21,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "id": "117",
+                "numero_mesa": "8",
+                "zona": "llevar"
+            }
+        ],
+        "area_preparacion": "",
+        "productos": [
+            {
+                "id_producto": "1",
+                "nombre_producto": "Botella de tequila 1 L",
+                "precio_uno": 35000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:30:41",
+                "composicion": null,
+                "preparacion": null,
+                "visibilidad": "visible",
+                "area_preparacion": "",
+                "cantidad": 2,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": null,
+                "unidad_medida": "",
+                "costo": null,
+                "hash_id": null,
+                "precio_raw": 35000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-11 11:23:14"
+            },
+            {
+                "id_producto": "2",
+                "nombre_producto": "limonada pote",
+                "precio_uno": 7000,
+                "incremento_online": "0.00",
+                "imagen_plantilla": "sin_imagen",
+                "dato_categoria": "bebidas",
+                "descripcion": "",
+                "fecha_creacion": "2026-05-09 21:31:56",
+                "composicion": null,
+                "preparacion": "[]",
+                "visibilidad": "",
+                "area_preparacion": "",
+                "cantidad": 2,
+                "clasificacion": "venta",
+                "conteo": "si",
+                "alerta": "0",
+                "unidad_medida": "",
+                "costo": "{\"cantidad\":1,\"unidad\":\"unidad\",\"costo_total\":0,\"costo_unitario\":0}",
+                "hash_id": null,
+                "precio_raw": 7000,
+                "observacion": "",
+                "fecha_hora_agregado": "2026-05-11 11:23:14"
+            }
+        ],
+        "telefono": "",
+        "direccion": "",
+        "mesero": "jefe",
+        "fecha": "2026-05-11 11:23:14",
+        "fecha_creacion_documento": "2026-05-11 11:23:14"
+    }
+]

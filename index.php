@@ -124,9 +124,20 @@
             gap: 8px;
         }
 
+        button.btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 12px;
+        }
+
         button:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
+        }
+
+        button.btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         button:active {
@@ -142,20 +153,28 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 12px;
+            padding: 10px 16px;
             border-radius: 100px;
-            font-size: 12px;
-            margin-top: 20px;
+            font-size: 13px;
+            margin-top: 32px;
             background: rgba(34, 197, 94, 0.1);
             color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.1);
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: #4ade80;
             border-radius: 50%;
-            box-shadow: 0 0 8px #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+        }
+
+        .printer-info {
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
         }
 
         /* Toast styles */
@@ -180,32 +199,42 @@
 <div id="app">
     <div class="header">
         <h1>PrintNode</h1>
-        <p>Sending orders directly to the kitchen</p>
+        <p>Terminal de Impresión Profesional</p>
     </div>
 
     <form @submit.prevent="sendOrder">
         <div class="form-group">
-            <label for="order">Order Details</label>
+            <label for="order">Mensaje de Prueba Rápida</label>
             <textarea 
                 id="order" 
                 v-model="order" 
-                placeholder="Ex: 2 Pepperoni Pizzas, 1 Coke..." 
+                placeholder="Escribe algo aquí para imprimir directamente..." 
                 required
                 :disabled="loading"
             ></textarea>
         </div>
         
         <button type="submit" :disabled="loading">
-            <span v-if="loading">Sending...</span>
-            <span v-else>Print Ticket</span>
+            <span v-if="loading">Enviando...</span>
+            <span v-else>Imprimir Texto</span>
             <svg v-if="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        </button>
+
+        <button type="button" @click="testJson" class="btn-secondary" :disabled="loading">
+            <span>Prueba Comanda Real (JSON)</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         </button>
     </form>
 
-    <div class="status-badge" :style="{ color: printerStatus === 'online' ? '#4ade80' : '#f87171', background: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }">
-        <div class="status-dot" :style="{ background: printerStatus === 'online' ? '#4ade80' : '#f87171', boxShadow: printerStatus === 'online' ? '0 0 8px #4ade80' : '0 0 8px #f87171' }"></div>
-        Printer: {{ printerStatus === 'online' ? 'Online' : 'Offline / Local Server Not Found' }}
-    </div>
+    <center>
+        <div class="status-badge" :style="{ color: printerStatus === 'online' ? '#4ade80' : '#f87171', background: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderColor: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)' }">
+            <div class="status-dot" :style="{ background: printerStatus === 'online' ? '#4ade80' : '#f87171', boxShadow: printerStatus === 'online' ? '0 0 10px #4ade80' : '0 0 10px #f87171' }"></div>
+            Servidor: {{ printerStatus === 'online' ? 'En Línea' : 'Desconectado' }}
+        </div>
+        <div v-if="printerName" class="printer-info">
+            Impresora: <b>{{ printerName }}</b>
+        </div>
+    </center>
 </div>
 
 <script>
@@ -215,6 +244,7 @@
             order: '',
             loading: false,
             printerStatus: 'checking',
+            printerName: '',
             localServerUrl: 'http://127.0.0.1:5000',
             pollingInterval: null
         },
@@ -231,7 +261,9 @@
                 try {
                     const response = await fetch(`${this.localServerUrl}/status`);
                     if (response.ok) {
+                        const data = await response.json();
                         this.printerStatus = 'online';
+                        this.printerName = data.printer;
                     } else {
                         this.printerStatus = 'offline';
                     }
@@ -240,7 +272,6 @@
                 }
             },
             async pollOrders() {
-                // Only poll if the printer is online to avoid unnecessary errors
                 if (this.printerStatus !== 'online') {
                     await this.checkPrinterStatus();
                     return;
@@ -276,6 +307,22 @@
                     console.error("Local print error:", error);
                 }
             },
+            async testJson() {
+                this.loading = true;
+                try {
+                    const response = await fetch(`${this.localServerUrl}/test-json`);
+                    const data = await response.json();
+                    if (data.status === 'ok') {
+                        alert("✅ " + data.message);
+                    } else {
+                        alert("❌ " + data.message);
+                    }
+                } catch (error) {
+                    alert("❌ No se pudo conectar con el servidor de impresión. Asegúrate de que printer_server.py esté ejecutándose.");
+                } finally {
+                    this.loading = false;
+                }
+            },
             async sendOrder() {
                 if (!this.order.trim()) return;
                 
@@ -293,14 +340,13 @@
 
                     if (data.status === 'success') {
                         this.order = '';
-                        // If we are on the printer machine, we might want to trigger poll immediately
                         this.pollOrders();
-                        alert("✅ Order queued for printing!");
+                        alert("✅ ¡Pedido en cola de impresión!");
                     } else {
                         alert("❌ Error: " + data.message);
                     }
                 } catch (error) {
-                    alert("❌ Server connection error");
+                    alert("❌ Error de conexión con el servidor PHP");
                 } finally {
                     this.loading = false;
                 }
@@ -310,4 +356,4 @@
 </script>
 
 </body>
-</html>
+</html>
