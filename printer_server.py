@@ -11,6 +11,7 @@ import win32ui
 import win32con
 from datetime import datetime
 from fpdf import FPDF
+import requests
 
 # =========================
 # CONFIGURACIÓN DE LOGS
@@ -275,56 +276,71 @@ class PrinterService:
 # =========================
 
 def background_polling(printer_service):
-    """Monitorea el archivo JSON y evita duplicados usando historial"""
-    logger.info("Iniciando monitoreo de archivo JSON...")
+    """Monitorea una URL remota o un archivo local y evita duplicados usando historial"""
+    logger.info("Iniciando monitoreo de pedidos...")
     historial = cargar_historial()
     first_run = True # Bandera para no imprimir el backlog al arrancar
     
     while True:
         try:
-            if os.path.exists(TEST_JSON_PATH):
-                with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
-                    try:
-                        data = json.load(f)
-                    except json.JSONDecodeError:
-                        data = []
-                
-                if not isinstance(data, list):
-                    data = []
+            remote_url = printer_service.config.get("remote_url")
+            data = []
 
-                # Agrupar por id_pedido para imprimir tickets completos
-                nuevos_por_pedido = defaultdict(list)
-                for item in data:
-                    item_id = str(item.get("id") or item.get("id_unico"))
-                    if item_id not in historial:
-                        nuevos_por_pedido[item.get("id_pedido")].append(item)
-                
-                if nuevos_por_pedido:
-                    if first_run:
-                        # En la primera ejecución, solo actualizamos el historial para ignorar el pasado
-                        for items in nuevos_por_pedido.values():
+            # 1. Intentar obtener datos desde URL remota si está configurada
+            if remote_url:
+                try:
+                    response = requests.get(remote_url, timeout=10)
+                    if response.status_code == 200:
+                        data = response.json()
+                    else:
+                        logger.error(f"Error accediendo a URL remota ({response.status_code}): {remote_url}")
+                except Exception as e:
+                    logger.error(f"Fallo de conexión remota: {e}")
+            
+            # 2. Si no hay URL o falló, intentar con archivo local (fallback)
+            elif os.path.exists(TEST_JSON_PATH):
+                try:
+                    with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                except json.JSONDecodeError:
+                    data = []
+            
+            if not isinstance(data, list):
+                data = []
+
+            # Agrupar por id_pedido para imprimir tickets completos
+            nuevos_por_pedido = defaultdict(list)
+            for item in data:
+                item_id = str(item.get("id") or item.get("id_unico"))
+                if item_id not in historial:
+                    nuevos_por_pedido[item.get("id_pedido")].append(item)
+            
+            if nuevos_por_pedido:
+                if first_run:
+                    # En la primera ejecución, solo actualizamos el historial para ignorar el pasado
+                    for items in nuevos_por_pedido.values():
+                        for item in items:
+                            item_id = str(item.get("id") or item.get("id_unico"))
+                            historial.add(item_id)
+                    guardar_historial(historial)
+                    logger.info(f"Arranque: Se detectaron {len(nuevos_por_pedido)} pedidos antiguos. Han sido marcados como leídos.")
+                else:
+                    # Impresión normal de nuevos pedidos
+                    for pid, items in nuevos_por_pedido.items():
+                        ticket = formatear_comanda(items, totalizar=printer_service.config.get("totalizar", False))
+                        if printer_service.print_thermal(ticket, job_name=f"Auto-Print Order {pid}"):
+                            # Marcar como impresos
                             for item in items:
                                 item_id = str(item.get("id") or item.get("id_unico"))
                                 historial.add(item_id)
-                        guardar_historial(historial)
-                        logger.info(f"Arranque: Se detectaron {len(nuevos_por_pedido)} pedidos antiguos en el JSON. Han sido marcados como leídos sin imprimir.")
-                    else:
-                        # Impresión normal de nuevos pedidos
-                        for pid, items in nuevos_por_pedido.items():
-                            ticket = formatear_comanda(items, totalizar=printer_service.config.get("totalizar", False))
-                            if printer_service.print_thermal(ticket, job_name=f"Auto-Print Order {pid}"):
-                                # Marcar como impresos
-                                for item in items:
-                                    item_id = str(item.get("id") or item.get("id_unico"))
-                                    historial.add(item_id)
-                        
-                        guardar_historial(historial)
-                        logger.info(f"Se imprimieron {len(nuevos_por_pedido)} pedidos nuevos detectados en el JSON")
+                    
+                    guardar_historial(historial)
+                    logger.info(f"Se imprimieron {len(nuevos_por_pedido)} pedidos nuevos detectados.")
             
             first_run = False # Ya podemos procesar nuevos pedidos normalmente
             
         except Exception as e:
-            logger.error(f"Error en el hilo de monitoreo: {e}")
+            logger.error(f"Error en el ciclo de monitoreo: {e}")
             
         time.sleep(5) # Revisa cada 5 segundos
 

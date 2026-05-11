@@ -303,19 +303,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 // =====================================================
-                // ENVÍO DIRECTO AL SERVIDOR DE IMPRESIÓN (Python)
+                // ENVÍO AL SERVIDOR DE IMPRESIÓN (Python)
                 // =====================================================
-                try {
-                    $ch = curl_init('http://127.0.0.1:5000/print');
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([$comanda])); // Enviamos como lista
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 2); // Timeout de 2 segundos para no colgar PHP
-                    curl_exec($ch);
-                    curl_close($ch);
-                } catch (Exception $e) {
-                    // Error silencioso para no interrumpir el flujo del pedido
+                // Solo intentamos CURL directo si estamos en local para rapidez.
+                // En el servidor real, el Python "jalara" el pedido por Polling.
+                if ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['REMOTE_ADDR'] === '::1') {
+                    try {
+                        $ch = curl_init('http://127.0.0.1:5000/print');
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([$comanda])); // Enviamos como lista
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 1); // Reducimos a 1s para no afectar al usuario
+                        curl_exec($ch);
+                        curl_close($ch);
+                    } catch (Exception $e) {
+                        // Error silencioso
+                    }
                 }
 
                 $contenido_actual[] = $comanda;
