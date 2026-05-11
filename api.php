@@ -22,7 +22,9 @@ $input = json_decode(file_get_contents('php://input'), true);
 if ($method === 'POST') {
     // SAVE ORDER
     if (isset($input['order'])) {
-        $queue = json_decode(file_get_contents($queueFile), true);
+        $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';
+        $queue = $fileContent ? json_decode($fileContent, true) : [];
+        if (!is_array($queue)) $queue = [];
         $newOrder = [
             'id' => uniqid(),
             'content' => $input['order'],
@@ -56,9 +58,14 @@ if ($method === 'POST') {
         exit;
     }
 
-    $queue = json_decode(file_get_contents($queueFile), true);
+    $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';
+    $queue = $fileContent ? json_decode($fileContent, true) : [];
+    if (!is_array($queue)) {
+        $queue = [];
+    }
+
     $pending = array_filter($queue, function($o) {
-        return $o['status'] === 'pending';
+        return isset($o['status']) && $o['status'] === 'pending';
     });
 
     // Mark as "processing" so they aren't picked up again immediately
