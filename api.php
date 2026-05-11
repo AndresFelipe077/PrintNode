@@ -40,22 +40,65 @@ if ($method === 'POST') {
     }
 } elseif ($method === 'GET') {
     // GET PENDING ORDERS
-    if (isset($_GET['action']) && $_GET['action'] === 'trigger_test') {
+    if (isset($_GET['action'])) {
+        $action = $_GET['action'];
         $file = 'integracion/server_comandas.json';
-        if (file_exists($file)) {
-            $data = json_decode(file_get_contents($file), true);
-            $new_id = (string)time();
-            foreach ($data as &$item) {
-                $item['id_pedido'] = $new_id;
-                $item['id'] = uniqid();
-                $item['id_unico'] = $item['id'];
+        
+        if ($action === 'get_comandas') {
+            if (file_exists($file)) {
+                $data = json_decode(file_get_contents($file), true);
+                if (!is_array($data)) $data = [];
+                
+                $comandasAgrupadas = [];
+                foreach ($data as $item) {
+                    $pid = $item['id_pedido'];
+                    if (!isset($comandasAgrupadas[$pid])) {
+                        $comandasAgrupadas[$pid] = [
+                            'id_pedido' => $pid,
+                            'cliente' => isset($item['nombre_cliente']) ? $item['nombre_cliente'] : 'Consumidor Final',
+                            'fecha' => isset($item['fecha']) ? $item['fecha'] : '',
+                            'items' => 0
+                        ];
+                    }
+                    if (isset($item['productos']) && is_array($item['productos'])) {
+                        foreach ($item['productos'] as $prod) {
+                            $comandasAgrupadas[$pid]['items'] += isset($prod['cantidad']) ? $prod['cantidad'] : 1;
+                        }
+                    }
+                }
+                echo json_encode(['status' => 'success', 'comandas' => array_reverse(array_values($comandasAgrupadas))]);
+            } else {
+                echo json_encode(['status' => 'success', 'comandas' => []]);
             }
-            file_put_contents($file, json_encode($data));
-            echo json_encode(['status' => 'success', 'message' => 'Test triggered']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Archivo JSON no encontrado']);
+            exit;
         }
-        exit;
+
+        if ($action === 'trigger_test') {
+            if (file_exists($file)) {
+                $data = json_decode(file_get_contents($file), true);
+                $target_id = isset($_GET['id_pedido']) ? $_GET['id_pedido'] : null;
+                $new_id = (string)time();
+                $triggered = false;
+                
+                foreach ($data as &$item) {
+                    if (!$target_id || $item['id_pedido'] == $target_id) {
+                        $item['id'] = uniqid();
+                        $item['id_unico'] = $item['id'];
+                        $triggered = true;
+                    }
+                }
+                
+                if ($triggered) {
+                    file_put_contents($file, json_encode($data));
+                    echo json_encode(['status' => 'success', 'message' => 'Comanda encolada para impresión']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Pedido no encontrado en el JSON']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Archivo JSON no encontrado']);
+            }
+            exit;
+        }
     }
 
     $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';

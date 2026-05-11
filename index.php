@@ -192,6 +192,66 @@
             z-index: 1000;
             display: none;
         }
+
+        .comandas-container {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        .comandas-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .comandas-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .comandas-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .comanda-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .comanda-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .comanda-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comanda-id {
+            font-weight: 600;
+            color: #818cf8;
+            font-size: 16px;
+        }
+
+        .comanda-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .comanda-info {
+            font-size: 14px;
+            color: var(--text);
+        }
     </style>
 </head>
 <body>
@@ -219,12 +279,24 @@
             <span v-else>Imprimir Texto</span>
             <svg v-if="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         </button>
-
-        <button type="button" @click="testJson" class="btn-secondary" :disabled="loading">
-            <span>Prueba Comanda Real (JSON)</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </button>
     </form>
+
+    <div class="comandas-container" v-if="comandas.length > 0">
+        <h3 style="margin-bottom: 16px; font-size: 16px; color: #cbd5e1;">Comandas Reales Disponibles</h3>
+        <div v-for="comanda in comandas" :key="comanda.id_pedido" class="comanda-card">
+            <div class="comanda-header">
+                <span class="comanda-id">Pedido #{{ comanda.id_pedido }}</span>
+                <span class="comanda-date">{{ comanda.fecha }}</span>
+            </div>
+            <div class="comanda-info">
+                Cliente: {{ comanda.cliente }} ({{ comanda.items }} items)
+            </div>
+            <button type="button" @click="testJson(comanda.id_pedido)" class="btn-secondary" style="padding: 10px; font-size: 14px; margin-top: 8px;" :disabled="loading">
+                <span>Imprimir Comanda</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </button>
+        </div>
+    </div>
 
     <center>
         <div class="status-badge" :style="{ color: printerStatus === 'online' ? '#4ade80' : '#f87171', background: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderColor: printerStatus === 'online' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)' }">
@@ -246,10 +318,12 @@
             printerStatus: 'checking',
             printerName: '',
             localServerUrl: 'http://127.0.0.1:5000',
-            pollingInterval: null
+            pollingInterval: null,
+            comandas: []
         },
         mounted() {
             this.checkPrinterStatus();
+            this.fetchComandas();
             // Start polling for new orders every 5 seconds
             this.pollingInterval = setInterval(this.pollOrders, 5000);
         },
@@ -307,7 +381,18 @@
                     console.error("Local print error:", error);
                 }
             },
-            async testJson() {
+            async fetchComandas() {
+                try {
+                    const response = await fetch('api.php?action=get_comandas');
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        this.comandas = data.comandas;
+                    }
+                } catch (error) {
+                    console.error("Error fetching comandas:", error);
+                }
+            },
+            async testJson(id_pedido) {
                 this.loading = true;
                 try {
                     // Si estamos en localhost, tratamos de imprimir directo.
@@ -324,10 +409,11 @@
                         }
                     } else {
                         // Forzar prueba modificando el JSON remoto para que el script de Python lo detecte en el polling
-                        const response = await fetch('api.php?action=trigger_test');
+                        const url = id_pedido ? `api.php?action=trigger_test&id_pedido=${id_pedido}` : 'api.php?action=trigger_test';
+                        const response = await fetch(url);
                         const data = await response.json();
                         if (data.status === 'success') {
-                            alert("✅ ¡Prueba remota encolada! La impresora local lo detectará en breve.");
+                            alert("✅ ¡Comanda encolada! La impresora local la detectará en breve.");
                         } else {
                             alert("❌ Error: " + data.message);
                         }
