@@ -11,6 +11,10 @@ import win32ui
 import win32con
 from datetime import datetime
 import requests
+import urllib3
+
+# Desactivar advertencias de SSL para certificados auto-firmados
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # =========================
 # CONFIGURACIÓN DE LOGS
@@ -251,7 +255,7 @@ def background_polling(printer_service):
             # 1. Intentar obtener datos desde URL remota si está configurada
             if remote_url:
                 try:
-                    response = requests.get(remote_url, timeout=10)
+                    response = requests.get(remote_url, timeout=10, verify=False)
                     if response.status_code == 200:
                         data = response.json()
                     else:
@@ -383,4 +387,4 @@ if __name__ == '__main__':
     
     logger.info("Print server started at http://0.0.0.0:5000")
     app.run(host='0.0.0.0', port=5000, debug=False)
-
+
