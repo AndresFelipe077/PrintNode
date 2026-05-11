@@ -148,7 +148,7 @@
         },
         mounted() {
             this.checkPrinterStatus();
-            this.pollingInterval = setInterval(this.pollOrders, 5000);
+            this.pollingInterval = setInterval(this.pollOrders, 1000);
         },
         beforeDestroy() {
             if (this.pollingInterval) clearInterval(this.pollingInterval);

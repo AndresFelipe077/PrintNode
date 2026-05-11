@@ -140,22 +140,12 @@ if ($method === 'POST') {
 
     $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';
     $queue = $fileContent ? json_decode($fileContent, true) : [];
-    if (!is_array($queue)) {
-        $queue = [];
+    if (!is_array($queue)) $queue = [];
+
+    // Devolvemos los pedidos y LIMPIAMOS la cola inmediatamente para que sea "directo"
+    echo json_encode(['status' => 'success', 'orders' => $queue]);
+    
+    if (!empty($queue)) {
+        file_put_contents($queueFile, json_encode([]));
     }
-
-    $pending = array_filter($queue, function($o) {
-        return isset($o['status']) && $o['status'] === 'pending';
-    });
-
-    // Mark as "processing" so they aren't picked up again immediately
-    // In a real app, you'd wait for a "printed" confirmation
-    foreach ($queue as &$o) {
-        if ($o['status'] === 'pending') {
-            $o['status'] = 'processing';
-        }
-    }
-    file_put_contents($queueFile, json_encode($queue));
-
-    echo json_encode(['status' => 'success', 'orders' => array_values($pending)]);
 }
