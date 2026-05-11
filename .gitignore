@@ -1,6 +1,10 @@
 # Local configuration
 config_impresora.json
 
+# JSON files for the web app
+orders_queue.json
+historial_impresion.json
+
 # Logs
 server.log
 
