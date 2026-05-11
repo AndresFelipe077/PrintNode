@@ -245,7 +245,7 @@
             loading: false,
             printerStatus: 'checking',
             printerName: '',
-            localServerUrl: 'http://127.0.0.1:5000',
+            localServerUrl: 'proxy.php',
             pollingInterval: null
         },
         mounted() {
@@ -259,7 +259,7 @@
         methods: {
             async checkPrinterStatus() {
                 try {
-                    const response = await fetch(`${this.localServerUrl}/status`);
+                    const response = await fetch(`${this.localServerUrl}?path=status`);
                     if (response.ok) {
                         const data = await response.json();
                         this.printerStatus = 'online';
@@ -292,7 +292,7 @@
             },
             async printLocally(orderData) {
                 try {
-                    const response = await fetch(`${this.localServerUrl}/print`, {
+                    const response = await fetch(`${this.localServerUrl}?path=print`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ order: orderData.content })
@@ -310,7 +310,7 @@
             async testJson() {
                 this.loading = true;
                 try {
-                    const response = await fetch(`${this.localServerUrl}/test-json`);
+                    const response = await fetch(`${this.localServerUrl}?path=test-json`);
                     const data = await response.json();
                     if (data.status === 'ok') {
                         alert("✅ " + data.message);
