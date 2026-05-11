@@ -38,28 +38,7 @@ def add_cors_headers(response):
     return response
 
 CONFIG_FILE = "config_impresora.json"
-TEST_JSON_PATH = os.path.join("integracion", "server_comandas.json")
-HISTORIAL_FILE = "historial_impresion.json"
-
-# =========================
-# GESTIÓN DE HISTORIAL
-# =========================
-
-def cargar_historial():
-    if os.path.exists(HISTORIAL_FILE):
-        try:
-            with open(HISTORIAL_FILE, "r") as f:
-                return set(json.load(f))
-        except:
-            return set()
-    return set()
-
-def guardar_historial(historial):
-    try:
-        with open(HISTORIAL_FILE, "w") as f:
-            json.dump(list(historial), f)
-    except Exception as e:
-        logger.error(f"Error guardando historial: {e}")
+# Historial ya no es necesario ya que el index.php controla la cola de impresiones
 
 # =========================
 # FORMATEO (Template from remota.py)
@@ -245,78 +224,7 @@ class PrinterService:
             logger.error(f"Print error: {str(e)}")
             return False
 
-# =========================
-# POLLING EN SEGUNDO PLANO
-# =========================
-
-def background_polling(printer_service):
-    """Monitorea una URL remota o un archivo local y evita duplicados usando historial"""
-    logger.info("Iniciando monitoreo de pedidos...")
-    historial = cargar_historial()
-    first_run = True # Bandera para no imprimir el backlog al arrancar
-    
-    while True:
-        try:
-            remote_url = printer_service.config.get("remote_url")
-            data = []
-
-            # 1. Intentar obtener datos desde URL remota si está configurada
-            if remote_url:
-                try:
-                    response = requests.get(remote_url, timeout=10, verify=False)
-                    if response.status_code == 200:
-                        data = response.json()
-                    else:
-                        logger.error(f"Error accediendo a URL remota ({response.status_code}): {remote_url}")
-                except Exception as e:
-                    logger.error(f"Fallo de conexión remota: {e}")
-            
-            # 2. Si no hay datos (porque no hay URL o falló), intentar con archivo local (fallback)
-            if not data and os.path.exists(TEST_JSON_PATH):
-                try:
-                    with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                except json.JSONDecodeError:
-                    data = []
-            
-            if not isinstance(data, list):
-                data = []
-
-            # Agrupar por id_pedido para imprimir tickets completos
-            nuevos_por_pedido = defaultdict(list)
-            for item in data:
-                item_id = str(item.get("id") or item.get("id_unico"))
-                if item_id not in historial:
-                    nuevos_por_pedido[item.get("id_pedido")].append(item)
-            
-            if nuevos_por_pedido:
-                if first_run:
-                    # En la primera ejecución, solo actualizamos el historial para ignorar el pasado
-                    for items in nuevos_por_pedido.values():
-                        for item in items:
-                            item_id = str(item.get("id") or item.get("id_unico"))
-                            historial.add(item_id)
-                    guardar_historial(historial)
-                    logger.info(f"Arranque: Se detectaron {len(nuevos_por_pedido)} pedidos antiguos. Han sido marcados como leídos.")
-                else:
-                    # Impresión normal de nuevos pedidos
-                    for pid, items in nuevos_por_pedido.items():
-                        ticket = formatear_comanda(items, totalizar=printer_service.config.get("totalizar", False))
-                        if printer_service.print_thermal(ticket, job_name=f"Auto-Print Order {pid}"):
-                            # Marcar como impresos
-                            for item in items:
-                                item_id = str(item.get("id") or item.get("id_unico"))
-                                historial.add(item_id)
-                    
-                    guardar_historial(historial)
-                    logger.info(f"Se imprimieron {len(nuevos_por_pedido)} pedidos nuevos detectados.")
-            
-            first_run = False # Ya podemos procesar nuevos pedidos normalmente
-            
-        except Exception as e:
-            logger.error(f"Error en el ciclo de monitoreo: {e}")
-            
-        time.sleep(5) # Revisa cada 5 segundos
+# El polling en segundo plano ha sido eliminado a favor de que el frontend lo maneje.
 
 printer_service = None
 
@@ -328,19 +236,11 @@ def print_endpoint():
 
     # If it's a list of comandas (new structure)
     if isinstance(data, list):
-        # Filtrar los que ya se imprimieron (por si acaso hay reenvío)
-        historial = cargar_historial()
-        nuevos = [item for item in data if str(item.get("id") or item.get("id_unico")) not in historial]
-        
-        if not nuevos:
-            return jsonify({"status": "ok", "message": "Already printed"})
+        if not data:
+            return jsonify({"status": "ok", "message": "No data"})
             
-        ticket = formatear_comanda(nuevos, totalizar=printer_service.config.get("totalizar", False))
+        ticket = formatear_comanda(data, totalizar=printer_service.config.get("totalizar", False))
         if printer_service.print_thermal(ticket):
-            # Actualizar historial
-            for item in nuevos:
-                historial.add(str(item.get("id") or item.get("id_unico")))
-            guardar_historial(historial)
             return jsonify({"status": "ok"})
     elif 'order' in data:
         # Compatibility with old structure (no ID tracking here)
@@ -388,10 +288,6 @@ def status():
 
 if __name__ == '__main__':
     printer_service = PrinterService(CONFIG_FILE)
-    
-    # Iniciar hilo de monitoreo (Polling)
-    poll_thread = threading.Thread(target=background_polling, args=(printer_service,), daemon=True)
-    poll_thread.start()
     
     logger.info("Print server started at http://0.0.0.0:5000")
     app.run(host='0.0.0.0', port=5000, debug=False)

@@ -107,8 +107,33 @@ if ($method === 'POST') {
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Pedido no encontrado en el JSON']);
                 }
-            } else {
                 echo json_encode(['status' => 'error', 'message' => "Archivo no encontrado en: $file"]);
+            }
+            exit;
+        }
+
+        if ($action === 'enqueue_custom_comanda') {
+            $inputJSON = file_get_contents('php://input');
+            $custom_comanda = json_decode($inputJSON, true);
+            
+            if ($custom_comanda) {
+                $queueFile = 'orders_queue.json';
+                $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';
+                $queue = $fileContent ? json_decode($fileContent, true) : [];
+                if (!is_array($queue)) $queue = [];
+                
+                $newOrder = [
+                    'id' => uniqid(),
+                    'content' => [$custom_comanda], // Wrapped in array
+                    'timestamp' => time(),
+                    'status' => 'pending'
+                ];
+                $queue[] = $newOrder;
+                file_put_contents($queueFile, json_encode($queue));
+                
+                echo json_encode(['status' => 'success', 'message' => 'Comanda manual encolada']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Datos inválidos']);
             }
             exit;
         }
