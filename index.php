@@ -8,112 +8,109 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .shadcn-card { background-color: #09090b; border: 1px solid #27272a; }
-        .shadcn-input { background-color: transparent; border: 1px solid #27272a; transition: all 0.2s; }
-        .shadcn-input:focus { border-color: #3f3f46; ring: 2px solid #3f3f46; }
+        .shadcn-input { background-color: transparent; border: 1px solid #27272a; transition: all 0.2s; border-radius: 1rem; }
+        .shadcn-input:focus { border-color: #3f3f46; outline: none; ring: 2px solid #3f3f46; }
     </style>
 </head>
 <body class="bg-[#020202] text-slate-50 min-h-screen p-4 md:p-8 flex items-center justify-center">
 
-<div id="app" class="w-full max-w-md shadcn-card rounded-xl p-6 md:p-8 shadow-2xl">
-    <div class="mb-8">
-        <h1 class="text-2xl font-semibold tracking-tight">PrintNode</h1>
-        <p class="text-slate-400 text-sm">Terminal de impresión térmica directa.</p>
+<div id="app" class="w-full max-w-md shadcn-card rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
+    <div class="mb-10 text-center">
+        <h1 class="text-3xl font-bold tracking-tight">PrintNode</h1>
+        <p class="text-slate-500 text-sm mt-1 font-medium">Terminal de impresión térmica</p>
     </div>
 
-    <!-- TABS (Shadcn style) -->
-    <div class="flex p-1 mb-8 bg-[#18181b] rounded-lg">
+    <!-- TABS (Extra rounded) -->
+    <div class="flex p-1.5 mb-8 bg-[#18181b] rounded-full border border-[#27272a]">
         <button @click="activeTab = 'texto'" 
-                :class="activeTab === 'texto' ? 'bg-[#09090b] text-slate-50 shadow-sm' : 'text-slate-400 hover:text-slate-200'" 
-                class="flex-1 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
+                :class="activeTab === 'texto' ? 'bg-[#09090b] text-slate-50 shadow-lg' : 'text-slate-500 hover:text-slate-300'" 
+                class="flex-1 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300">
             Texto
         </button>
         <button @click="activeTab = 'manual'" 
-                :class="activeTab === 'manual' ? 'bg-[#09090b] text-slate-50 shadow-sm' : 'text-slate-400 hover:text-slate-200'" 
-                class="flex-1 py-1.5 rounded-md text-sm font-medium transition-all duration-200">
+                :class="activeTab === 'manual' ? 'bg-[#09090b] text-slate-50 shadow-lg' : 'text-slate-500 hover:text-slate-300'" 
+                class="flex-1 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300">
             Manual
         </button>
     </div>
 
     <!-- TEXT FORM -->
     <form v-if="activeTab === 'texto'" @submit.prevent="sendOrder" class="space-y-6">
-        <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mensaje rápido</label>
+        <div class="space-y-3">
+            <label class="text-[11px] font-bold uppercase tracking-widest text-slate-500 ml-1">Mensaje rápido</label>
             <textarea v-model="order" 
                       placeholder="Contenido del ticket..." 
-                      class="flex min-h-[120px] w-full rounded-md shadcn-input px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50 resize-none" 
+                      class="flex min-h-[140px] w-full shadcn-input px-5 py-4 text-sm placeholder:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-800 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-mono" 
                       required :disabled="loading"></textarea>
         </div>
         
         <button type="submit" :disabled="loading" 
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-50 text-slate-900 hover:bg-slate-50/90 h-10 px-4 py-2 w-full">
-            <span v-if="loading">Procesando...</span>
+                class="inline-flex items-center justify-center rounded-full text-sm font-bold uppercase tracking-wider transition-all bg-slate-50 text-slate-900 hover:bg-slate-200 active:scale-95 h-14 px-8 w-full shadow-xl shadow-white/5">
+            <span v-if="loading">Enviando...</span>
             <template v-else>
-                Imprimir ticket
+                Imprimir ahora
             </template>
         </button>
     </form>
 
     <!-- MANUAL FORM -->
-    <form v-if="activeTab === 'manual'" @submit.prevent="sendCustomComanda" class="space-y-4">
+    <form v-if="activeTab === 'manual'" @submit.prevent="sendCustomComanda" class="space-y-5">
         <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-                <label class="text-sm font-medium leading-none">Cliente</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Cliente</label>
                 <input v-model="customComanda.nombre" type="text" placeholder="Nombre" 
-                       class="flex h-10 w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" required>
+                       class="flex h-12 w-full shadcn-input px-4 text-sm focus-visible:outline-none" required>
             </div>
             <div class="space-y-2">
-                <label class="text-sm font-medium leading-none">Teléfono</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Teléfono</label>
                 <input v-model="customComanda.telefono" type="tel" placeholder="314..." 
-                       class="flex h-10 w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+                       class="flex h-12 w-full shadcn-input px-4 text-sm focus-visible:outline-none">
             </div>
         </div>
         
         <div class="space-y-2">
-            <label class="text-sm font-medium leading-none">Dirección</label>
-            <input v-model="customComanda.direccion" type="text" placeholder="Calle/Carrera..." 
-                   class="flex h-10 w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Dirección</label>
+            <input v-model="customComanda.direccion" type="text" placeholder="Dirección completa" 
+                   class="flex h-12 w-full shadcn-input px-4 text-sm focus-visible:outline-none">
         </div>
         
         <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-                <label class="text-sm font-medium leading-none">Zona / Mesa</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Zona</label>
                 <input v-model="customComanda.zona" type="text" 
-                       class="flex h-10 w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+                       class="flex h-12 w-full shadcn-input px-4 text-sm focus-visible:outline-none">
             </div>
             <div class="space-y-2">
-                <label class="text-sm font-medium leading-none">Atiende</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Atiende</label>
                 <input v-model="customComanda.mesero" type="text" 
-                       class="flex h-10 w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
+                       class="flex h-12 w-full shadcn-input px-4 text-sm focus-visible:outline-none">
             </div>
         </div>
         
         <div class="space-y-2">
-            <label class="text-sm font-medium leading-none">Productos</label>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">Productos</label>
             <textarea v-model="customComanda.productosText" 
-                      placeholder="1x Hamburguesa..." 
-                      class="flex min-h-[80px] w-full rounded-md shadcn-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400" 
+                      placeholder="1x Producto..." 
+                      class="flex min-h-[100px] w-full shadcn-input px-4 py-3 text-sm focus-visible:outline-none" 
                       required></textarea>
         </div>
 
         <button type="submit" :disabled="loading" 
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-slate-50 text-slate-900 hover:bg-slate-50/90 h-10 px-4 py-2 w-full mt-2">
+                class="inline-flex items-center justify-center rounded-full text-sm font-bold uppercase tracking-wider transition-all bg-slate-50 text-slate-900 hover:bg-slate-200 active:scale-95 h-14 px-8 w-full mt-2 shadow-xl shadow-white/5">
             <span v-if="loading">Generando...</span>
             <span v-else>Imprimir comanda</span>
         </button>
     </form>
 
     <!-- STATUS FOOTER -->
-    <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full" 
-                 :class="printerStatus === 'online' ? 'bg-emerald-500' : 'bg-red-500'"></div>
-            <span class="text-xs font-medium"
+    <div class="mt-10 pt-8 border-t border-slate-900 flex flex-col items-center">
+        <div class="flex items-center gap-3 bg-black/40 px-5 py-2.5 rounded-full border border-slate-800 shadow-inner">
+            <div class="w-2.5 h-2.5 rounded-full" 
+                 :class="printerStatus === 'online' ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'"></div>
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em]"
                   :class="printerStatus === 'online' ? 'text-emerald-500' : 'text-red-500'">
-                {{ printerStatus === 'online' ? 'Servidor conectado' : 'Servidor desconectado' }}
+                {{ printerStatus === 'online' ? 'Sistema en línea' : 'Sistema offline' }}
             </span>
-        </div>
-        <div v-if="printerName" class="text-[10px] text-slate-500 mt-2">
-            {{ printerName }}
         </div>
     </div>
 </div>
