@@ -366,10 +366,11 @@
             },
             async printLocally(orderData) {
                 try {
+                    const payload = Array.isArray(orderData.content) ? orderData.content : { order: orderData.content };
                     const response = await fetch(`${this.localServerUrl}/print`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ order: orderData.content })
+                        body: JSON.stringify(payload)
                     });
                     
                     if (response.ok) {

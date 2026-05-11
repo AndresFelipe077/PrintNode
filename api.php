@@ -77,20 +77,33 @@ if ($method === 'POST') {
             if (file_exists($file)) {
                 $data = json_decode(file_get_contents($file), true);
                 $target_id = isset($_GET['id_pedido']) ? $_GET['id_pedido'] : null;
-                $new_id = (string)time();
-                $triggered = false;
                 
-                foreach ($data as &$item) {
-                    if (!$target_id || $item['id_pedido'] == $target_id) {
-                        $item['id'] = uniqid();
+                $comanda_items = [];
+                foreach ($data as $item) {
+                    if ($item['id_pedido'] == $target_id) {
+                        $item['id'] = uniqid(); // Forzar nuevo ID
                         $item['id_unico'] = $item['id'];
-                        $triggered = true;
+                        $comanda_items[] = $item;
                     }
                 }
                 
-                if ($triggered) {
-                    file_put_contents($file, json_encode($data));
-                    echo json_encode(['status' => 'success', 'message' => 'Comanda encolada para impresión']);
+                if (count($comanda_items) > 0) {
+                    // Agregar directamente a la cola de pedidos (orders_queue.json)
+                    $queueFile = 'orders_queue.json';
+                    $fileContent = file_exists($queueFile) ? file_get_contents($queueFile) : '';
+                    $queue = $fileContent ? json_decode($fileContent, true) : [];
+                    if (!is_array($queue)) $queue = [];
+                    
+                    $newOrder = [
+                        'id' => uniqid(),
+                        'content' => $comanda_items, // El array de la comanda completa
+                        'timestamp' => time(),
+                        'status' => 'pending'
+                    ];
+                    $queue[] = $newOrder;
+                    file_put_contents($queueFile, json_encode($queue));
+                    
+                    echo json_encode(['status' => 'success', 'message' => 'Comanda completa enviada a la cola']);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Pedido no encontrado en el JSON']);
                 }
