@@ -8,4 +8,5 @@ services:
       - "8080:80"
     volumes:
       - ./orders_queue.json:/var/www/html/orders_queue.json
+      - ./integracion:/var/www/html/integracion
     restart: always

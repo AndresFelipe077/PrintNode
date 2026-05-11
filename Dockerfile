@@ -15,11 +15,13 @@ WORKDIR /var/www/html
 COPY index.php ./
 COPY api.php ./
 COPY docs/ ./docs/
+COPY integracion/ ./integracion/
 
 # Create an empty queue file and set permissions
 RUN touch orders_queue.json && chmod 777 orders_queue.json
 
-# Adjust permissions for the web server
+# Adjust permissions for the web server and the integracion folder
+RUN chmod -R 777 integracion/
 RUN chown -R www-data:www-data /var/www/html
 
 # Expose port 80
