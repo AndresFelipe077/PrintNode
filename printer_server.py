@@ -10,7 +10,6 @@ import win32print
 import win32ui
 import win32con
 from datetime import datetime
-from fpdf import FPDF
 import requests
 
 # =========================
@@ -57,40 +56,6 @@ def guardar_historial(historial):
             json.dump(list(historial), f)
     except Exception as e:
         logger.error(f"Error guardando historial: {e}")
-
-# =========================
-# PDF PREVIEW
-# =========================
-
-def abrir_pdf_comanda(texto):
-    """Genera un PDF de la comanda y lo abre automáticamente en Windows"""
-    try:
-        # Formato de 80mm de ancho (típico de térmica)
-        pdf = FPDF(unit="mm", format=(80, 250))
-        pdf.add_page()
-        pdf.set_margins(5, 5, 5)
-        pdf.set_auto_page_break(True, margin=5)
-        
-        pdf.set_font("Courier", size=10)
-        
-        for line in texto.split('\n'):
-            line_up = line.upper()
-            # Si es un producto (empieza con número y tiene X), poner en negrita
-            if line_up.strip()[:1].isdigit() and ("X" in line_up):
-                pdf.set_font("Courier", style="B", size=10)
-            else:
-                pdf.set_font("Courier", style="", size=10)
-            
-            pdf.multi_cell(70, 5, line_up)
-            
-        path = os.path.abspath("ultima_comanda.pdf")
-        pdf.output(path)
-        
-        if os.name == 'nt':
-            os.startfile(path)
-            logger.info(f"PDF generado y abierto: {path}")
-    except Exception as e:
-        logger.error(f"Error generando PDF: {e}")
 
 # =========================
 # FORMATEO (Template from remota.py)
@@ -195,9 +160,6 @@ class PrinterService:
             return self.setup_printer()
 
     def print_thermal(self, texto, job_name="Comanda"):
-        # Abrir vista previa en PDF automáticamente
-        abrir_pdf_comanda(texto)
-        
         try:
             printer_name = self.config["printer"]
             tamano_letra = self.config.get("font_size", 34)
