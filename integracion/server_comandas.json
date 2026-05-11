@@ -216,7 +216,7 @@
         "productos": [
             {
                 "id_producto": "9",
-                "nombre_producto": "piña 350ml",
+                "nombre_producto": "pi\u00f1a 350ml",
                 "precio_uno": 4000,
                 "incremento_online": "0.00",
                 "imagen_plantilla": "sin_imagen",
@@ -363,7 +363,7 @@
             },
             {
                 "id_producto": "9",
-                "nombre_producto": "piña 350ml",
+                "nombre_producto": "pi\u00f1a 350ml",
                 "precio_uno": 4000,
                 "incremento_online": "0.00",
                 "imagen_plantilla": "sin_imagen",
@@ -543,7 +543,7 @@
             },
             {
                 "id_producto": "9",
-                "nombre_producto": "piña 350ml",
+                "nombre_producto": "pi\u00f1a 350ml",
                 "precio_uno": 4000,
                 "incremento_online": "0.00",
                 "imagen_plantilla": "sin_imagen",
@@ -723,7 +723,7 @@
             },
             {
                 "id_producto": "9",
-                "nombre_producto": "piña 350ml",
+                "nombre_producto": "pi\u00f1a 350ml",
                 "precio_uno": 4000,
                 "incremento_online": "0.00",
                 "imagen_plantilla": "sin_imagen",
@@ -791,7 +791,7 @@
             },
             {
                 "id_producto": "9",
-                "nombre_producto": "piña 350ml",
+                "nombre_producto": "pi\u00f1a 350ml",
                 "precio_uno": 4000,
                 "incremento_online": "0.00",
                 "imagen_plantilla": "sin_imagen",
@@ -1067,5 +1067,32 @@
         "mesero": "jefe",
         "fecha": "2026-05-11 11:23:14",
         "fecha_creacion_documento": "2026-05-11 11:23:14"
+    },
+    {
+        "id": "7dcd0daa669243d2a4136f813ae61752",
+        "id_pedido": 501,
+        "tipo_documento": "comanda_automatica",
+        "mesas": [
+            {
+                "zona": "ZONA TEST",
+                "numero_mesa": "501"
+            }
+        ],
+        "productos": [
+            {
+                "cantidad": 1,
+                "nombre_producto": "Producto Prueba 501",
+                "precio_raw": 15000,
+                "observacion": "Sin cebolla"
+            },
+            {
+                "cantidad": 2,
+                "nombre_producto": "Refresco Grande",
+                "precio_raw": 4500
+            }
+        ],
+        "mesero": "Simulador",
+        "fecha": "2026-05-11 15:29:26",
+        "fecha_creacion_documento": "2026-05-11 15:29:26"
     }
 ]

@@ -2,12 +2,15 @@ import os
 import json
 import logging
 import time
+import threading
+from collections import defaultdict
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import win32print
 import win32ui
 import win32con
 from datetime import datetime
+from fpdf import FPDF
 
 # =========================
 # CONFIGURACIÓN DE LOGS
@@ -32,6 +35,61 @@ def add_cors_headers(response):
 
 CONFIG_FILE = "config_impresora.json"
 TEST_JSON_PATH = os.path.join("integracion", "server_comandas.json")
+HISTORIAL_FILE = "historial_impresion.json"
+
+# =========================
+# GESTIÓN DE HISTORIAL
+# =========================
+
+def cargar_historial():
+    if os.path.exists(HISTORIAL_FILE):
+        try:
+            with open(HISTORIAL_FILE, "r") as f:
+                return set(json.load(f))
+        except:
+            return set()
+    return set()
+
+def guardar_historial(historial):
+    try:
+        with open(HISTORIAL_FILE, "w") as f:
+            json.dump(list(historial), f)
+    except Exception as e:
+        logger.error(f"Error guardando historial: {e}")
+
+# =========================
+# PDF PREVIEW
+# =========================
+
+def abrir_pdf_comanda(texto):
+    """Genera un PDF de la comanda y lo abre automáticamente en Windows"""
+    try:
+        # Formato de 80mm de ancho (típico de térmica)
+        pdf = FPDF(unit="mm", format=(80, 250))
+        pdf.add_page()
+        pdf.set_margins(5, 5, 5)
+        pdf.set_auto_page_break(True, margin=5)
+        
+        pdf.set_font("Courier", size=10)
+        
+        for line in texto.split('\n'):
+            line_up = line.upper()
+            # Si es un producto (empieza con número y tiene X), poner en negrita
+            if line_up.strip()[:1].isdigit() and ("X" in line_up):
+                pdf.set_font("Courier", style="B", size=10)
+            else:
+                pdf.set_font("Courier", style="", size=10)
+            
+            pdf.multi_cell(70, 5, line_up)
+            
+        path = os.path.abspath("ultima_comanda.pdf")
+        pdf.output(path)
+        
+        if os.name == 'nt':
+            os.startfile(path)
+            logger.info(f"PDF generado y abierto: {path}")
+    except Exception as e:
+        logger.error(f"Error generando PDF: {e}")
 
 # =========================
 # FORMATEO (Template from remota.py)
@@ -136,6 +194,9 @@ class PrinterService:
             return self.setup_printer()
 
     def print_thermal(self, texto, job_name="Comanda"):
+        # Abrir vista previa en PDF automáticamente
+        abrir_pdf_comanda(texto)
+        
         try:
             printer_name = self.config["printer"]
             tamano_letra = self.config.get("font_size", 34)
@@ -209,6 +270,64 @@ class PrinterService:
             logger.error(f"Print error: {str(e)}")
             return False
 
+# =========================
+# POLLING EN SEGUNDO PLANO
+# =========================
+
+def background_polling(printer_service):
+    """Monitorea el archivo JSON y evita duplicados usando historial"""
+    logger.info("Iniciando monitoreo de archivo JSON...")
+    historial = cargar_historial()
+    first_run = True # Bandera para no imprimir el backlog al arrancar
+    
+    while True:
+        try:
+            if os.path.exists(TEST_JSON_PATH):
+                with open(TEST_JSON_PATH, "r", encoding="utf-8") as f:
+                    try:
+                        data = json.load(f)
+                    except json.JSONDecodeError:
+                        data = []
+                
+                if not isinstance(data, list):
+                    data = []
+
+                # Agrupar por id_pedido para imprimir tickets completos
+                nuevos_por_pedido = defaultdict(list)
+                for item in data:
+                    item_id = str(item.get("id") or item.get("id_unico"))
+                    if item_id not in historial:
+                        nuevos_por_pedido[item.get("id_pedido")].append(item)
+                
+                if nuevos_por_pedido:
+                    if first_run:
+                        # En la primera ejecución, solo actualizamos el historial para ignorar el pasado
+                        for items in nuevos_por_pedido.values():
+                            for item in items:
+                                item_id = str(item.get("id") or item.get("id_unico"))
+                                historial.add(item_id)
+                        guardar_historial(historial)
+                        logger.info(f"Arranque: Se detectaron {len(nuevos_por_pedido)} pedidos antiguos en el JSON. Han sido marcados como leídos sin imprimir.")
+                    else:
+                        # Impresión normal de nuevos pedidos
+                        for pid, items in nuevos_por_pedido.items():
+                            ticket = formatear_comanda(items, totalizar=printer_service.config.get("totalizar", False))
+                            if printer_service.print_thermal(ticket, job_name=f"Auto-Print Order {pid}"):
+                                # Marcar como impresos
+                                for item in items:
+                                    item_id = str(item.get("id") or item.get("id_unico"))
+                                    historial.add(item_id)
+                        
+                        guardar_historial(historial)
+                        logger.info(f"Se imprimieron {len(nuevos_por_pedido)} pedidos nuevos detectados en el JSON")
+            
+            first_run = False # Ya podemos procesar nuevos pedidos normalmente
+            
+        except Exception as e:
+            logger.error(f"Error en el hilo de monitoreo: {e}")
+            
+        time.sleep(5) # Revisa cada 5 segundos
+
 printer_service = None
 
 @app.route('/print', methods=['POST'])
@@ -219,21 +338,32 @@ def print_endpoint():
 
     # If it's a list of comandas (new structure)
     if isinstance(data, list):
-        ticket = formatear_comanda(data, totalizar=printer_service.config.get("totalizar", False))
+        # Filtrar los que ya se imprimieron (por si acaso hay reenvío)
+        historial = cargar_historial()
+        nuevos = [item for item in data if str(item.get("id") or item.get("id_unico")) not in historial]
+        
+        if not nuevos:
+            return jsonify({"status": "ok", "message": "Already printed"})
+            
+        ticket = formatear_comanda(nuevos, totalizar=printer_service.config.get("totalizar", False))
+        if printer_service.print_thermal(ticket):
+            # Actualizar historial
+            for item in nuevos:
+                historial.add(str(item.get("id") or item.get("id_unico")))
+            guardar_historial(historial)
+            return jsonify({"status": "ok"})
     elif 'order' in data:
-        # Compatibility with old structure
-        ticket = data['order']
+        # Compatibility with old structure (no ID tracking here)
+        if printer_service.print_thermal(data['order']):
+            return jsonify({"status": "ok"})
     else:
         return jsonify({"status": "error", "message": "Format not recognized"}), 400
     
-    if printer_service.print_thermal(ticket):
-        return jsonify({"status": "ok"})
-    else:
-        return jsonify({"status": "error", "message": "Printer error"}), 500
+    return jsonify({"status": "error", "message": "Printer error"}), 500
 
 @app.route('/test-json', methods=['GET'])
 def test_json():
-    """Endpoint for testing with local JSON file"""
+    """Endpoint for testing with local JSON file (ignoring history for test)"""
     if not os.path.exists(TEST_JSON_PATH):
         return jsonify({"status": "error", "message": f"File not found: {TEST_JSON_PATH}"}), 404
         
@@ -244,8 +374,6 @@ def test_json():
         if not data:
             return jsonify({"status": "error", "message": "Empty JSON"}), 400
             
-        # We take the first comanda to test
-        # formatear_comanda expects a list of comandas
         first_order_id = data[0].get("id_pedido")
         order_items = [item for item in data if item.get("id_pedido") == first_order_id]
         
@@ -270,5 +398,11 @@ def status():
 
 if __name__ == '__main__':
     printer_service = PrinterService(CONFIG_FILE)
+    
+    # Iniciar hilo de monitoreo (Polling)
+    poll_thread = threading.Thread(target=background_polling, args=(printer_service,), daemon=True)
+    poll_thread.start()
+    
     logger.info("Print server started at http://0.0.0.0:5000")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
+
