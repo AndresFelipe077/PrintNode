@@ -302,6 +302,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $comanda['nombre_cliente'] = $nombre;
                 }
 
+                // =====================================================
+                // ENVÍO DIRECTO AL SERVIDOR DE IMPRESIÓN (Python)
+                // =====================================================
+                try {
+                    $ch = curl_init('http://127.0.0.1:5000/print');
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([$comanda])); // Enviamos como lista
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 2); // Timeout de 2 segundos para no colgar PHP
+                    curl_exec($ch);
+                    curl_close($ch);
+                } catch (Exception $e) {
+                    // Error silencioso para no interrumpir el flujo del pedido
+                }
+
                 $contenido_actual[] = $comanda;
             }
 
