@@ -42,7 +42,7 @@ if ($method === 'POST') {
     // GET PENDING ORDERS
     if (isset($_GET['action'])) {
         $action = $_GET['action'];
-        $file = 'integracion/server_comandas.json';
+        $file = __DIR__ . '/integracion/server_comandas.json';
         
         if ($action === 'get_comandas') {
             if (file_exists($file)) {
@@ -68,7 +68,7 @@ if ($method === 'POST') {
                 }
                 echo json_encode(['status' => 'success', 'comandas' => array_reverse(array_values($comandasAgrupadas))]);
             } else {
-                echo json_encode(['status' => 'success', 'comandas' => []]);
+                echo json_encode(['status' => 'error', 'message' => "Archivo no encontrado en: $file", 'comandas' => []]);
             }
             exit;
         }
@@ -95,7 +95,7 @@ if ($method === 'POST') {
                     echo json_encode(['status' => 'error', 'message' => 'Pedido no encontrado en el JSON']);
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Archivo JSON no encontrado']);
+                echo json_encode(['status' => 'error', 'message' => "Archivo no encontrado en: $file"]);
             }
             exit;
         }

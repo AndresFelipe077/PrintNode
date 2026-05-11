@@ -387,6 +387,9 @@
                     const data = await response.json();
                     if (data.status === 'success') {
                         this.comandas = data.comandas;
+                    } else {
+                        console.error("Error del servidor:", data.message);
+                        alert("⚠️ " + data.message);
                     }
                 } catch (error) {
                     console.error("Error fetching comandas:", error);
