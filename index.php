@@ -262,24 +262,56 @@
         <p>Terminal de Impresión Profesional</p>
     </div>
 
-    <form @submit.prevent="sendOrder">
-        <div class="form-group">
-            <label for="order">Mensaje de Prueba Rápida</label>
-            <textarea 
-                id="order" 
-                v-model="order" 
-                placeholder="Escribe algo aquí para imprimir directamente..." 
-                required
-                :disabled="loading"
-            ></textarea>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button type="button" @click="activeTab = 'texto'" :class="activeTab === 'texto' ? 'btn-primary' : 'btn-secondary'" style="flex: 1; padding: 10px; text-align: center; border-radius: 8px;">Texto Rápido</button>
+            <button type="button" @click="activeTab = 'manual'" :class="activeTab === 'manual' ? 'btn-primary' : 'btn-secondary'" style="flex: 1; padding: 10px; text-align: center; border-radius: 8px;">Comanda Manual</button>
         </div>
-        
-        <button type="submit" :disabled="loading">
-            <span v-if="loading">Enviando...</span>
-            <span v-else>Imprimir Texto</span>
-            <svg v-if="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-        </button>
-    </form>
+
+        <form v-if="activeTab === 'texto'" @submit.prevent="sendOrder">
+            <div class="form-group">
+                <label for="order">Mensaje de Prueba Rápida</label>
+                <textarea 
+                    id="order" 
+                    v-model="order" 
+                    placeholder="Escribe algo aquí para imprimir directamente..." 
+                    required
+                    :disabled="loading"
+                ></textarea>
+            </div>
+            
+            <button type="submit" :disabled="loading">
+                <span v-if="loading">Enviando...</span>
+                <span v-else>Imprimir Texto</span>
+                <svg v-if="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </button>
+        </form>
+
+        <form v-if="activeTab === 'manual'" @submit.prevent="sendCustomComanda">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input v-model="customComanda.nombre" type="text" placeholder="Nombre del cliente" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;" required>
+                <input v-model="customComanda.telefono" type="tel" placeholder="Teléfono" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+            </div>
+            <input v-model="customComanda.direccion" type="text" placeholder="Dirección" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; margin-bottom: 10px;">
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input v-model="customComanda.zona" type="text" placeholder="Zona (Ej: Domicilio, Mesa 1)" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                <input v-model="customComanda.mesero" type="text" placeholder="Mesero" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+            </div>
+            
+            <textarea
+                v-model="customComanda.productosText"
+                placeholder="Productos (uno por línea, ej: 1x Hamburguesa)"
+                rows="4"
+                style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; resize: vertical; margin-bottom: 15px;"
+                required
+            ></textarea>
+
+            <button type="submit" :disabled="loading">
+                <span v-if="loading">Enviando...</span>
+                <span v-else>Imprimir Comanda Manual</span>
+                <svg v-if="!loading" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </button>
+        </form>
 
     <div class="comandas-container" v-if="comandas.length > 0">
         <h3 style="margin-bottom: 16px; font-size: 16px; color: #cbd5e1;">Comandas Reales Disponibles</h3>
@@ -313,13 +345,22 @@
     new Vue({
         el: "#app",
         data: {
+            activeTab: 'texto',
             order: '',
             loading: false,
             printerStatus: 'checking',
             printerName: '',
             localServerUrl: 'http://127.0.0.1:5000',
             pollingInterval: null,
-            comandas: []
+            comandas: [],
+            customComanda: {
+                nombre: '',
+                telefono: '',
+                direccion: '',
+                zona: 'Domicilio',
+                mesero: 'Caja',
+                productosText: ''
+            }
         },
         mounted() {
             this.checkPrinterStatus();
@@ -424,6 +465,58 @@
                     }
                 } catch (error) {
                     alert("❌ No se pudo conectar con el servidor. Asegúrate de que todo esté en orden.");
+                } finally {
+                    this.loading = false;
+                }
+            },
+            async sendCustomComanda() {
+                this.loading = true;
+                try {
+                    // Parse text products to JSON objects
+                    const lines = this.customComanda.productosText.split('\n').filter(l => l.trim() !== '');
+                    const productos = lines.map(line => {
+                        const match = line.match(/^(\d+)[xX]\s+(.+)/);
+                        if (match) {
+                            return { cantidad: parseInt(match[1], 10), nombre_producto: match[2].trim(), precio_raw: 0 };
+                        } else {
+                            return { cantidad: 1, nombre_producto: line.trim(), precio_raw: 0 };
+                        }
+                    });
+
+                    const d = new Date();
+                    const pad = n => n.toString().padStart(2, '0');
+                    const fecha = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                    
+                    const comanda = {
+                        id: 'MANUAL_' + Math.floor(Math.random() * 1000000),
+                        id_pedido: Math.floor(Math.random() * 1000),
+                        tipo_documento: 'comanda_automatica',
+                        nombre_cliente: this.customComanda.nombre,
+                        telefono: this.customComanda.telefono,
+                        direccion: this.customComanda.direccion,
+                        mesero: this.customComanda.mesero,
+                        fecha: fecha,
+                        fecha_creacion_documento: fecha,
+                        mesas: [{zona: this.customComanda.zona, numero_mesa: "1"}],
+                        area_preparacion: "general",
+                        productos: productos
+                    };
+
+                    const response = await fetch('api.php?action=enqueue_custom_comanda', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(comanda)
+                    });
+                    
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        alert("✅ Comanda manual enviada a la cola. La impresora la procesará en breve.");
+                        this.customComanda.productosText = '';
+                    } else {
+                        alert("❌ Error: " + data.message);
+                    }
+                } catch (error) {
+                    alert("❌ Error de conexión: " + error.message);
                 } finally {
                     this.loading = false;
                 }
